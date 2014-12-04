@@ -1,26 +1,3 @@
- /***********************************************************************
-     * Name(s)  Wesley Pollock                                             *
-     * Box(s):  4507                                                       *
-     * Supplemental Problem 5: Commodities and Prices                      *
-     *                                                                     *
-     * Assignment for December 9th, 2014                                   *
-     ***********************************************************************/
-
-    /* *********************************************************************
-     * Academic honesty certification:                                     *
-     *   Written/online sources used:                                      *
-     *     none                                                            *
-     *                                                                     *
-     *   Help obtained                                                     *
-     *     none                                                            *
-     *                                                                     *
-     *   My/our signature(s) below confirms that the above list of sources *
-     *   is complete AND that I/we have not talked to anyone else          *
-     *   (e.g., CSC 161 students) about the solution to this problem       *
-     *                                                                     *
-     *   Signature:                                                        *
-     ***********************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -94,6 +71,8 @@ Post-conditions:
 */
 void map (struct item ** first, double priceFunc (double));
 
+void priceSort (struct item ** first);
+
 /*
 Pre-conditions :
   none
@@ -114,7 +93,7 @@ int main()
       printf("a: apply function \"a\" to all prices in the inventory\n");
       printf("b: apply function \"b\" to all prices in the inventory\n");
       printf("c: apply function \"c\" to all prices in the inventory\n");
-      //printf("s: sort the inventory by placing the items in ascending order of price\n");
+      printf("s: sort the inventory by placing the items in ascending order of price\n");
       printf("q: quit\n");
       printf("Input single character option: ");
       option = getchar();
@@ -136,7 +115,7 @@ int main()
         map(&inventory,c);
         break;
       case 's':
-        printf("Option %c is not yet implimented\n",option);
+        priceSort(&inventory);
         break;
       case 'q':
         printf("Quitting\n");
@@ -193,23 +172,94 @@ void map(struct item ** first, double priceFunc(double))
   *first = temp;
 }
 
-/* reduce a price by 10% */
 double a (double orig_price)
 {
   return 0.90 * orig_price;
 }
 
-/* increase a price using a linear formula */
 double b (double orig_price)
 {
   return 2.50 + 1.15 * orig_price;
 }
 
-/* change prices up and down in a curious way, using the cosine function
-from math.h (compile with -lm) */
 double c (double orig_price)
 {
   return 12.00 + 9 * cos(orig_price);
 }
+
+/*
+void priceSort(struct item ** first)
+{
+  if (first != NULL && first->next != NULL)
+    {
+      struct item * newList = NULL;
+      strncpy(newList->name,(*first)->name,50);
+      newList->price = (*first)->price;
+      struct item * temp = *first;
+      
+      while (temp != NULL && keyItem->price > restList->price)
+        {
+          
+        }
+    }
+}
+*/
+
+
+void priceSort (struct item ** unsortedList)
+{
+  if (*unsortedList != NULL && (*unsortedList)->next != NULL)
+    //If not the singleton list
+    {
+      //Create a new linked list of just the first item in unsortedList
+      struct item * sorted =  (struct item *)malloc(sizeof(struct item));
+      sorted->price = (*unsortedList)->price;
+      strncpy(sorted->name, (*unsortedList)->name, 20); 
+      sorted->next = NULL; 
+      (*unsortedList) = (*unsortedList)->next;
+      while(*unsortedList != NULL)
+        {
+          /*
+            Create a new pointer to an item node from the current first node
+            in the unsortedList. This node will be placed in the correct
+            position in sorted
+           */
+          struct item * keyPtr = (struct item *)malloc(sizeof(struct item));
+          keyPtr->next = NULL;
+          strncpy(keyPtr->name,(*unsortedList)->name, 20);
+          keyPtr->price = (*unsortedList)->price;
+
+          //Current Node in sorted to search
+          struct item * searchPtr = sorted->next; 
+          //Node behind searchPtr
+          struct item * prevPtr = sorted; 
+
+          /*
+            Search through sorted list until the key node has a price value
+            higher than the search node
+          */
+          while (searchPtr != NULL && searchPtr->price < keyPtr->price)
+            {
+              prevPtr = searchPtr;
+              searchPtr = prevPtr->next;
+            }
+          /*
+            After the correct position for the key node has been reached, insert
+            it into the sorted list
+          */
+          keyPtr->next = searchPtr;
+          prevPtr->next = keyPtr;
+          /*
+            Move to the next item in the unsortedList so that it can be inserted
+            into sorted
+          */
+          *unsortedList = (*unsortedList)->next;
+        }      
+      *unsortedList = sorted;
+    }
+}
+
+
+
 
 
