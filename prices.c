@@ -187,25 +187,6 @@ double c (double orig_price)
   return 12.00 + 9 * cos(orig_price);
 }
 
-/*
-void priceSort(struct item ** first)
-{
-  if (first != NULL && first->next != NULL)
-    {
-      struct item * newList = NULL;
-      strncpy(newList->name,(*first)->name,50);
-      newList->price = (*first)->price;
-      struct item * temp = *first;
-      
-      while (temp != NULL && keyItem->price > restList->price)
-        {
-          
-        }
-    }
-}
-*/
-
-
 void priceSort (struct item ** unsortedList)
 {
   if (*unsortedList != NULL && (*unsortedList)->next != NULL)
