@@ -1,11 +1,33 @@
+/***********************************************************************
+     * Name(s)  Wesley Pollock                                             *
+     * Box(s):  4507                                                       *
+     * Supplemental Problem 5: Commodities and Prices                      *
+     *                                                                     *
+     * Assignment for Tuesday, December 9th 2014                           *
+     ***********************************************************************/
+
+    /* *********************************************************************
+     * Academic honesty certification:                                     *
+     *   Written/online sources used:                                      *
+     *     None                                                            *
+     *                                                                     *
+     *   Help obtained                                                     *
+     *     None                                                            *
+     *                                                                     *
+     *   My/our signature(s) below confirms that the above list of sources *
+     *   is complete AND that I/we have not talked to anyone else          *
+     *   (e.g., CSC 161 students) about the solution to this problem       *
+     *                                                                     *
+     *   Signature:                                                        *
+     ***********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 
-const maxNameLen = 50;
 struct item {
-  char name [50];
+  char name [51];
   double price;
   struct item * next;
 };
@@ -15,6 +37,8 @@ Pre-conditions :
    first it a pointer to the first struct item * node in the linked list. If 
    this is the first item to be added, the list must be initialized 
    (e.g. *first = NULL). first must be of type struct item **
+   When prompted, the name of the item must be a string no longer than 50 
+   characters long and the price must be a positive number
 Post-conditions:
    addItem prompts the users to enter the item name and price then adds the item
    to the front of the list
@@ -158,15 +182,12 @@ void addItem(struct item ** first){
 
 void print(struct item * first)
 {
-  printf("(");
-  char * sep = "";
+  printf("[Inventory] \n");
   while (first != NULL)
     {
-      printf("%s\"%s : $%.2lf\"",sep,first->name,first->price);
-      sep = " ";
+      printf("%s : $%.2lf \n",first->name,first->price);
       first = first->next;
     }
-  printf(")\n");
 }
 
 void map(struct item ** first, double priceFunc(double))
