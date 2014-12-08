@@ -71,6 +71,14 @@ Post-conditions:
 */
 void map (struct item ** first, double priceFunc (double));
 
+/*
+Pre-conditions :
+  first is a pointer to the first struct item * node in the linked list. If the
+    linked list is empty *first must equal NULL
+Post-conditions:
+  priceSort sorts the items in the inventory, *first, from the lowest price to 
+  to the highest
+*/
 void priceSort (struct item ** first);
 
 /*
@@ -187,60 +195,52 @@ double c (double orig_price)
   return 12.00 + 9 * cos(orig_price);
 }
 
-void priceSort (struct item ** unsortedList)
+void priceSort (struct item ** first)
 {
-  if (*unsortedList != NULL && (*unsortedList)->next != NULL)
-    //If not the singleton list
+  if (*first != NULL)
     {
-      //Create a new linked list of just the first item in unsortedList
-      struct item * sorted =  (struct item *)malloc(sizeof(struct item));
-      sorted->price = (*unsortedList)->price;
-      strncpy(sorted->name, (*unsortedList)->name, 20); 
-      sorted->next = NULL; 
-      (*unsortedList) = (*unsortedList)->next;
-      while(*unsortedList != NULL)
+      struct item * rest; //The list of the unsorted items
+      struct item * keyPtr; //The current item being sorted
+      struct item * searchPtr;
+      struct item * prevPtr;
+      rest = (*first)->next;
+      (*first)->next = NULL;
+      while (rest != NULL)
         {
+          keyPtr = rest;
+          /* Move the pointer to the list of the unsorted items down*/
+          rest = rest->next;
           /*
-            Create a new pointer to an item node from the current first node
-            in the unsortedList. This node will be placed in the correct
-            position in sorted
-           */
-          struct item * keyPtr = (struct item *)malloc(sizeof(struct item));
-          keyPtr->next = NULL;
-          strncpy(keyPtr->name,(*unsortedList)->name, 20);
-          keyPtr->price = (*unsortedList)->price;
-
-          //Current Node in sorted to search
-          struct item * searchPtr = sorted->next; 
-          //Node behind searchPtr
-          struct item * prevPtr = sorted; 
-
-          /*
-            Search through sorted list until the key node has a price value
-            higher than the search node
+            Insert keyPtr to front of the list, if it is less than the first
+            item
           */
-          while (searchPtr != NULL && searchPtr->price < keyPtr->price)
+          if ((*first)->price > keyPtr->price)
             {
-              prevPtr = searchPtr;
-              searchPtr = prevPtr->next;
+              keyPtr->next = *first;
+              *first = keyPtr;
             }
           /*
-            After the correct position for the key node has been reached, insert
-            it into the sorted list
+            Else go through the sorted list and insert keyPtr to the correct 
+            place
           */
-          keyPtr->next = searchPtr;
-          prevPtr->next = keyPtr;
-          /*
-            Move to the next item in the unsortedList so that it can be inserted
-            into sorted
-          */
-          *unsortedList = (*unsortedList)->next;
-        }      
-      *unsortedList = sorted;
+          else
+            {
+              /* Start comparisons from the beginning of the list */
+              searchPtr = (*first)->next;
+              prevPtr = *first;
+              /*
+                Move down the list while price of the item at keyPtr is
+                larger than the price at searchPtr 
+              */
+              while (searchPtr != NULL && searchPtr->price < keyPtr->price)
+                {
+                  prevPtr = searchPtr;
+                  searchPtr = searchPtr->next;
+                }
+              /*insert keyPtr back into list at sorted position*/
+              keyPtr->next = searchPtr;
+              prevPtr->next = keyPtr;   
+            }
+        } 
     }
 }
-
-
-
-
-
